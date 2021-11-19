@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
@@ -28,7 +29,6 @@ public class InfoActivity extends AppCompatActivity {
                 load(uri).
                 into(candyStoreImageView);
 
-
     }
 
     public void createMapIntent(View view) {
@@ -39,6 +39,8 @@ public class InfoActivity extends AppCompatActivity {
 
         if(mapIntent.resolveActivity(getPackageManager()) != null) {
             startActivity(mapIntent);
+        } else {
+            Log.e("InfoActivity", "It was null");
         }
     }
 

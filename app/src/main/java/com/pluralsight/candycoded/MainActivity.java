@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onSuccess(int statusCode, Header[] headers, String response) {
                         Log.d("AsyncHttpClient", "response = " + response);
                         Gson gson = new GsonBuilder().create();
-                        ;
                         candies = gson.fromJson(response, Candy[].class);
 
                         addCandiesToDatabase(candies);
@@ -91,9 +90,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(infoIntent);
         return super.onOptionsItemSelected(item);
     }
-    // ***
-    // TODO - Task 1 - Show Store Information Activity
-    // ***
 
     private void addCandiesToDatabase(Candy[] candies) {
         SQLiteDatabase db = candyDbHelper.getWritableDatabase();
