@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -50,13 +51,13 @@ public class _1_StartTheStoreInformationActivity {
             try {
                 activity.onCreate(bundle);
             } catch (Exception e) {
-                //e.printStackTrace();
+                e.printStackTrace();
             }
 
             try {
                 onOptionsItemSelected_result = activity.onOptionsItemSelected(null);
             } catch (Throwable e) {
-                //e.printStackTrace();
+                e.printStackTrace();
             }
 
             // Check if new Intent() was called with any arguments.
@@ -64,7 +65,7 @@ public class _1_StartTheStoreInformationActivity {
                 PowerMockito.verifyNew(Intent.class, Mockito.atLeastOnce()).withNoArguments();
                 called_Intent = true;
             } catch (Throwable e) {
-                //e.printStackTrace();
+                e.printStackTrace();
             }
 
             try {
@@ -72,7 +73,7 @@ public class _1_StartTheStoreInformationActivity {
                     MainActivity.class), Mockito.any(Class.class));
                 called_Intent = true;
             } catch (Throwable e) {
-                //e.printStackTrace();
+                e.printStackTrace();
             }
 
             // Check if new Intent() was called with the correct arguments.
@@ -85,7 +86,7 @@ public class _1_StartTheStoreInformationActivity {
             called_startActivity = true;
 
         } catch (Throwable e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -119,7 +120,7 @@ public class _1_StartTheStoreInformationActivity {
                     .getMethod("onOptionsItemSelected", MenuItem.class)
                     .getDeclaringClass();
         } catch (NoSuchMethodException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
 
         assertEquals("onOptionsItemSelected() method doesn't exist in MainActivity class.",
