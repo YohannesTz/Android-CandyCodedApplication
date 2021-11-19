@@ -2,6 +2,7 @@ package com.pluralsight.candycoded;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -27,81 +28,84 @@ import cz.msebera.android.httpclient.Header;
 
 
 public class MainActivity extends AppCompatActivity {
-  private Candy[] candies;
-  private CandyDbHelper candyDbHelper = new CandyDbHelper(this);
+    private Candy[] candies;
+    private CandyDbHelper candyDbHelper = new CandyDbHelper(this);
 
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-    SQLiteDatabase db = candyDbHelper.getWritableDatabase();
-    Cursor cursor = db.rawQuery("SELECT * FROM candy", null);
+        SQLiteDatabase db = candyDbHelper.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM candy", null);
 
-    final CandyCursorAdapter adapter = new CandyCursorAdapter(this, cursor);
-    ListView listView = (ListView)this.findViewById(R.id.list_view_candy);
+        final CandyCursorAdapter adapter = new CandyCursorAdapter(this, cursor);
+        ListView listView = (ListView) this.findViewById(R.id.list_view_candy);
 
-    listView.setAdapter(adapter);
+        listView.setAdapter(adapter);
 
-    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-      @Override
-      public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
-        detailIntent.putExtra("position", i);
-        startActivity(detailIntent);
-      }
-    });
-
-    AsyncHttpClient client = new AsyncHttpClient();
-    client.get("https://vast-brushlands-23089.herokuapp.com/main/api",
-        new TextHttpResponseHandler() {
-          @Override
-          public void onFailure(int statusCode, Header[] headers, String response, Throwable throwable) {
-            Log.e("AsyncHttpClient", "response = " + response);
-          }
-
-          @Override
-          public void onSuccess(int statusCode, Header[] headers, String response) {
-            Log.d("AsyncHttpClient", "response = " + response);
-            Gson gson = new GsonBuilder().create();;
-            candies = gson.fromJson(response, Candy[].class);
-
-            addCandiesToDatabase(candies);
-
-            SQLiteDatabase db = candyDbHelper.getWritableDatabase();
-            Cursor cursor = db.rawQuery("SELECT * FROM candy", null);
-            adapter.changeCursor(cursor);
-          }
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
+                detailIntent.putExtra("position", i);
+                startActivity(detailIntent);
+            }
         });
-  }
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.main, menu);
-    return true;
-  }
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get("https://vast-brushlands-23089.herokuapp.com/main/api",
+                new TextHttpResponseHandler() {
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String response, Throwable throwable) {
+                        Log.e("AsyncHttpClient", "response = " + response);
+                    }
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, String response) {
+                        Log.d("AsyncHttpClient", "response = " + response);
+                        Gson gson = new GsonBuilder().create();
+                        ;
+                        candies = gson.fromJson(response, Candy[].class);
+
+                        addCandiesToDatabase(candies);
+
+                        SQLiteDatabase db = candyDbHelper.getWritableDatabase();
+                        Cursor cursor = db.rawQuery("SELECT * FROM candy", null);
+                        adapter.changeCursor(cursor);
+                    }
+                });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent infoIntent = new Intent(this, InfoActivity.class);
+        startActivity(infoIntent);
         return super.onOptionsItemSelected(item);
     }
-  // ***
-  // TODO - Task 1 - Show Store Information Activity
-  // ***
+    // ***
+    // TODO - Task 1 - Show Store Information Activity
+    // ***
 
-  private void addCandiesToDatabase(Candy[] candies) {
-    SQLiteDatabase db = candyDbHelper.getWritableDatabase();
+    private void addCandiesToDatabase(Candy[] candies) {
+        SQLiteDatabase db = candyDbHelper.getWritableDatabase();
 
-    for (Candy candy : candies) {
-      ContentValues values = new ContentValues();
-      values.put(CandyContract.CandyEntry.COLUMN_NAME_NAME, candy.name);
-      values.put(CandyContract.CandyEntry.COLUMN_NAME_PRICE, candy.price);
-      values.put(CandyContract.CandyEntry.COLUMN_NAME_DESC, candy.description);
-      values.put(CandyContract.CandyEntry.COLUMN_NAME_IMAGE, candy.image);
+        for (Candy candy : candies) {
+            ContentValues values = new ContentValues();
+            values.put(CandyContract.CandyEntry.COLUMN_NAME_NAME, candy.name);
+            values.put(CandyContract.CandyEntry.COLUMN_NAME_PRICE, candy.price);
+            values.put(CandyContract.CandyEntry.COLUMN_NAME_DESC, candy.description);
+            values.put(CandyContract.CandyEntry.COLUMN_NAME_IMAGE, candy.image);
 
-      db.insert(CandyContract.CandyEntry.TABLE_NAME, null, values);
+            db.insert(CandyContract.CandyEntry.TABLE_NAME, null, values);
+        }
     }
-  }
 }
